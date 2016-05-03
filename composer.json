@@ -1,0 +1,26 @@
+{
+    "name": "phpnexus/cors",
+    "description": "Provides CORS functionality for various PHP frameworks.",
+    "keywords": ["cors"],
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Mark Prosser"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8 || ^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpNexus\\Cors\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
