@@ -1,7 +1,12 @@
 {
     "name": "phpnexus/cors",
-    "description": "Provides CORS functionality for various PHP frameworks.",
-    "keywords": ["cors"],
+    "description": "Provides CORS middleware for PSR-7 compatible frameworks.",
+    "keywords": [
+        "cors",
+        "middleware",
+        "psr-7",
+        "psr7"
+    ],
     "type": "library",
     "license": "Apache-2.0",
     "authors": [
