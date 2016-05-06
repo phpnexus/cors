@@ -1,14 +1,13 @@
 # CORS
 
+[![Latest Version](http://img.shields.io/packagist/v/phpnexus/cors.svg?style=flat-square)](https://github.com/phpnexus/cors/releases)
 [![Software License](https://img.shields.io/badge/license-Apache_2.0-brightgreen.svg?style=flat-square)](LICENSE.md)
 
-Provides CORS functionality for PSR-7 compatible frameworks, and is easily extensible for use in practically any other framework.
+Provides a lightweight, extensible, framework-agnostic CORS class.
 
-Officially supported frameworks include:
+**You probably want to check these specific implementations for easy installation**
 
-* Slim 3
-
-However this package includes a service provider which can be used by any [container-interop](https://github.com/container-interop/container-interop) service container implementing "delegate lookup".
+* [PSR-7](https://github.com/phpnexus/cors-psr7)
 
 ## Installation
 
@@ -22,55 +21,57 @@ This package requires PHP 5.5.9 or newer.
 
 ## Usage
 
-### Slim 3
-
-The Slim 3 framework uses PSR-7 HTTP messages and a container-interop compatible implementation of the Pimple service container.
-
-To enable CORS support in your application, follow these steps:
-
-#### Add the CORS service provider to your service container
-
-*dependencies.php*
-
-```php
-$container->register(new PhpNexus\Cors\Providers\Slim3ServiceProvider);
-```
-
-#### Add the CORS PSR-7 middleware to your app
-
-*middleware.php*
-
-```php
-$app->add(new CorsPsr7Middleware());
-```
-
-#### Add your configuration
-
-*settings.php*
-
-```php
-$settings['cors'] = [
-    'allow-methods'     => ['GET', 'POST'],
-    'allow-headers'     => ['Content-Type'],
-    'allow-origins'     => [],
-    'allow-credentials' => false,
-    'expose-headers'    => [],
-    'max-age'           => 0,
-];
-```
-
-### Other frameworks
-
-The `CorsService` class can be used directly with any other frameworks.
-
 TODO
+
+## Configuration
+
+### Allow-Methods
+
+Default: `[]`
+
+An array of allowed HTTP methods. These names are **case-sensitive**.
+
+Example: `['GET', 'POST']`
+
+### Allow-Headers
+
+Default: `[]`
+
+Example: `['Content-Type']`
+
+### Allow-Origins
+
+Default: `[]`
+
+An array of allowed origins, in the form `scheme://hostname`.
+
+Example: `['http://example.com', 'https://example.com']`
+
+**This is not a replacement for proper access control measures.**
+
+Note: An asterisk (`*`) _can_ also be used to allow any origin, but as per the specification the asterisk (`*`) _cannot_ be used when Allow-Credentials is `true`.
+
+### Allow-Credentials
+
+Default: `false`
+
+Use `true` to allow cookies to be sent with the request.
+
+Note: Cannot be `true` when the Allow-Origin contains `"*"`.
+
+### Expose-Headers
+
+Default: `[]`
+
+### Max-Age
+
+Default: `0` (no cache)
+
+Number of seconds to cache the preflight response.
 
 ## Roadmap
 
-* Official support for Zend Expressive
- * Support for Zend\ServiceManager and Aura.Di containers
- * Documentation
-* Support for other containers NOT implementing "delegate lookup"
+* Benchmarks
 
 ## Versioning
 
