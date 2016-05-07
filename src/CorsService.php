@@ -10,6 +10,7 @@
 namespace PhpNexus\Cors;
 
 use InvalidArgumentException;
+use Psr\Http\Message\ServerRequestInterface;
 
 class CorsService
 {
@@ -56,10 +57,10 @@ class CorsService
     /**
      * Process request
      *
-     * @param CorsRequest $request
+     * @param Psr\Http\Message\ServerRequestInterface $request
      * @return array|false Response parameters
      */
-    public function process(CorsRequest $request)
+    public function process(ServerRequestInterface $request)
     {
         $response = [];
 
@@ -69,41 +70,41 @@ class CorsService
          */
         if ($this->checkRequestIsPreflight($request)) {
             // Section 6.2 #1 - If no origin, stop processing
-            if (!$request->hasOrigin()) {
+            if (!$request->hasHeader('Origin')) {
                return $response;
             }
 
             // Section 6.2 #2 - If origin not allowed, stop processing
-            if (!$this->isOriginAllowed($request->getOrigin())) {
+            if (!$this->isOriginAllowed($request->getHeader('Origin')[0])) {
                 return $response;
             }
 
             // Section 6.2 #3 - Check access-control-request-method
-            if (!$this->checkAccessControlRequestMethod($request->getAccessControlRequestMethod())) {
+            if (!$this->checkAccessControlRequestMethod($request->getHeader('Access-Control-Request-Method')[0])) {
                 return $response;
             }
 
             // Section 6.2 #4 - Check access-control-request-headers
-            if ($request->hasAccessControlRequestHeaders()
-            && !$this->checkAccessControlRequestHeaders($request->getAccessControlRequestHeaders())
+            if ($request->hasHeader('Access-Control-Request-Headers')
+            && !$this->checkAccessControlRequestHeaders($request->getHeader('Access-Control-Request-Headers'))
             ) {
                 return $response;
             }
 
             // Section 6.2 #5 - Check if requested method allowed
-            if (!$this->isMethodAllowed($request->getAccessControlRequestMethod())) {
+            if (!$this->isMethodAllowed($request->getHeader('Access-Control-Request-Method')[0])) {
                 return $response;
             }
 
             // Section 6.2 #6 - Check if ALL requested headers are allowed
-            if ($request->hasAccessControlRequestHeaders()
-            && !$this->isHeadersAllowed($request->getAccessControlRequestHeaders())
+            if ($request->hasHeader('Access-Control-Request-Headers')
+            && !$this->isHeadersAllowed($request->getHeader('Access-Control-Request-Headers'))
             ) {
                 return $response;
             }
 
             // Section 6.2 #7 - Add allowed origin to response parameters
-            $response['access-control-allow-origin'] = $request->getOrigin();
+            $response['access-control-allow-origin'] = $request->getHeader('Origin')[0];
 
             // Section 6.2 #7 - Add allow credentials to response parameters
             if ($this->canAllowCredentials()) {
@@ -118,13 +119,13 @@ class CorsService
             }
 
             // Section 6.2 #9 - If request method is NOT simple method
-            if (!$this->isSimpleMethod($request->getAccessControlRequestMethod())) {
+            if (!$this->isSimpleMethod($request->getHeader('Access-Control-Request-Method')[0])) {
                 // Add allowed methods to response parameters
                 $response['access-control-allow-methods'] = $this->config['allowMethods'];
             }
 
             // Section 6.2 #10 - If request headers is NOT simple header, or request headers contains Content-Type
-            if (!$this->isSimpleHeaders($request->getAccessControlRequestHeaders())) {
+            if (!$this->isSimpleHeaders($request->getHeader('Access-Control-Request-Headers'))) {
                 // Add allowed headers to response parameters
                 $response['access-control-allow-headers'] = $this->config['allowHeaders'];
             }
@@ -135,17 +136,17 @@ class CorsService
          */
         else {
             // Section 6.1 #1 - If no origin, stop processing
-            if (!$request->hasOrigin()) {
+            if (!$request->hasHeader('Origin')) {
                return $response;
             }
 
             // Section 6.1 #2 - If origin not allowed, stop processing
-            if (!$this->isOriginAllowed($request->getOrigin())) {
+            if (!$this->isOriginAllowed($request->getHeader('Origin')[0])) {
                 return $response;
             }
 
             // Section 6.1 #3 - Add allowed origin to response parameters
-            $response['access-control-allow-origin'] = $request->getOrigin();
+            $response['access-control-allow-origin'] = $request->getHeader('Origin')[0];
 
             // Section 6.1 #3 - Add allow credentials to response parameters
             if ($this->canAllowCredentials()) {
@@ -212,14 +213,14 @@ class CorsService
      *
      * A preflight request has a method OPTIONS and header "Access-Control-Request-Method"
      *
-     * @param CorsRequest $request
+     * @param Psr\Http\Message\ServerRequestInterface $request
      * @return bool
      */
-    public function checkRequestIsPreflight(CorsRequest $request)
+    public function checkRequestIsPreflight(ServerRequestInterface $request)
     {
         return (
             $request->getMethod() === 'OPTIONS'
-            && $request->hasAccessControlRequestMethod()
+            && $request->hasHeader('Access-Control-Request-Method')
         );
     }
 
