@@ -114,7 +114,7 @@ class CorsService
             // Section 6.2 #8 - Optionally add max-age
             if ($this->canCache()) {
                 // Add max age to response parameters
-                $response['max-age'] = $this->config['maxAge'];
+                $response['max-age'] = strval($this->config['maxAge']);
             }
 
             // Section 6.2 #9 - If request method is NOT simple method
