@@ -31,7 +31,7 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setMethod('GET')
         );
 
-        $this->assertEquals($result, []);
+        $this->assertEquals([], $result);
     }
 
     /**
@@ -52,7 +52,7 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://bad.example.com')
         );
 
-        $this->assertEquals($result, []);
+        $this->assertEquals([], $result);
     }
 
     /**
@@ -76,9 +76,9 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin' => 'http://example.com',
-        ]);
+        ], $result);
     }
 
     /**
@@ -102,9 +102,9 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin' => 'http://example.com',
-        ]);
+        ], $result);
     }
 
     /**
@@ -129,10 +129,10 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin'      => 'http://example.com',
             'access-control-allow-credentials' => 'true',
-        ]);
+        ], $result);
     }
 
     /**
@@ -157,9 +157,9 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin' => 'http://example.com',
-        ]);
+        ], $result);
     }
 
     /**
@@ -184,10 +184,10 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin'   => 'http://example.com',
             'access-control-expose-headers' => ['X-My-Custom-Header'],
-        ]);
+        ], $result);
     }
 
     /**
@@ -209,7 +209,7 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setAccessControlRequestMethod('PUT')
         );
 
-        $this->assertEquals($result, []);
+        $this->assertEquals([], $result);
     }
 
     /**
@@ -232,7 +232,7 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://bad.example.com')
         );
 
-        $this->assertEquals($result, []);
+        $this->assertEquals([], $result);
     }
 
     /**
@@ -257,7 +257,7 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, []);
+        $this->assertEquals([], $result);
     }
 
     /**
@@ -281,7 +281,7 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, []);
+        $this->assertEquals([], $result);
     }
 
     /**
@@ -306,7 +306,7 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, []);
+        $this->assertEquals([], $result);
     }
 
     /**
@@ -333,7 +333,7 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, []);
+        $this->assertEquals([], $result);
     }
 
     /**
@@ -359,9 +359,9 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin' => 'http://example.com',
-        ]);
+        ], $result);
     }
 
     /**
@@ -386,9 +386,9 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin' => 'http://example.com',
-        ]);
+        ], $result);
     }
 
     /**
@@ -415,10 +415,10 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin'      => 'http://example.com',
             'access-control-allow-credentials' => 'true',
-        ]);
+        ], $result);
     }
 
     /**
@@ -445,9 +445,9 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin' => 'http://example.com',
-        ]);
+        ], $result);
     }
 
     /**
@@ -474,10 +474,10 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin' => 'http://example.com',
             'max-age'                     => 3600,
-        ]);
+        ], $result);
     }
 
     /**
@@ -502,9 +502,9 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin' => 'http://example.com',
-        ]);
+        ], $result);
     }
 
     /**
@@ -531,10 +531,10 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin'  => 'http://example.com',
             'access-control-allow-methods' => ['PATCH'],
-        ]);
+        ], $result);
     }
 
     /**
@@ -563,9 +563,9 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin' => 'http://example.com',
-        ]);
+        ], $result);
     }
 
     /**
@@ -594,9 +594,9 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
             ->setOrigin('http://example.com')
         );
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'access-control-allow-origin'  => 'http://example.com',
             'access-control-allow-headers' => ['Authorization', 'Content-Type'],
-        ]);
+        ], $result);
     }
 }
