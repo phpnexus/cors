@@ -177,10 +177,25 @@ class CorsService
             array_intersect_key($config, $this->config)
         );
 
-        // Normalize allow-credentials
+        // Normalize allowMethods
+        if (is_string($config['allowMethods'])) {
+            $config['allowMethods'] = [$config['allowMethods']];
+        }
+
+        // Normalize allowHeaders
+        if (is_string($config['allowHeaders'])) {
+            $config['allowHeaders'] = [$config['allowHeaders']];
+        }
+
+        // Normalize allowOrigins
+        if (is_string($config['allowOrigins'])) {
+            $config['allowOrigins'] = [$config['allowOrigins']];
+        }
+
+        // Normalize allowCredentials
         $config['allowCredentials'] = (bool)$config['allowCredentials'];
 
-        // Normalize max-age
+        // Normalize maxAge
         $config['maxAge'] = (int)$config['maxAge'];
 
         $this->config = $config;
