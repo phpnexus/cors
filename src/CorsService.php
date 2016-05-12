@@ -67,7 +67,7 @@ class CorsService
          * Section 6.2 - Preflight Request
          * @see https://www.w3.org/TR/cors/#resource-preflight-requests
          */
-        if ($this->checkRequestIsPreflight($request)) {
+        if ($request->isPreflight()) {
             // Section 6.2 #1 - If no origin, stop processing
             if (!$request->hasOrigin()) {
                return $response;
@@ -205,22 +205,6 @@ class CorsService
         else {
             return; // Or throw exception?
         }
-    }
-
-    /**
-     * Check if preflight request
-     *
-     * A preflight request has a method OPTIONS and header "Access-Control-Request-Method"
-     *
-     * @param CorsRequest $request
-     * @return bool
-     */
-    public function checkRequestIsPreflight(CorsRequest $request)
-    {
-        return (
-            $request->getMethod() === 'OPTIONS'
-            && $request->hasAccessControlRequestMethod()
-        );
     }
 
     /**
@@ -397,10 +381,8 @@ class CorsService
      */
     public function canAllowCredentials()
     {
-        return (
-            !in_array('*', $this->config['allowOrigins'], true)
-            && (bool)$this->config['allowCredentials']
-        );
+        return !in_array('*', $this->config['allowOrigins'], true)
+        && (bool)$this->config['allowCredentials'];
     }
 
     /**

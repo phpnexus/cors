@@ -55,6 +55,17 @@ class CorsRequest
     }
 
     /**
+     * Is this a preflight request?
+     *
+     * @return bool
+     */
+    public function isPreflight()
+    {
+        return $this->getMethod() === 'OPTIONS'
+        && $this->hasAccessControlRequestMethod();
+    }
+
+    /**
      * Set method
      *
      * @param string $method
