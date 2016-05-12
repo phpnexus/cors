@@ -57,7 +57,7 @@ class CorsService
      * Process request
      *
      * @param CorsRequest $request
-     * @return array|false Response parameters
+     * @return array Response parameters
      */
     public function process(CorsRequest $request)
     {
