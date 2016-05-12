@@ -226,10 +226,19 @@ class CorsService
      * Check if Access-Control-Request-Method is valid
      * Section 5.8
      *
+     * @param string $accessControlRequestMethod
      * @return bool
+     * @throws InvalidArgumentException
      */
     public function checkAccessControlRequestMethod($accessControlRequestMethod)
     {
+        // Make sure $accessControlRequestMethod is string
+        if (!is_string($accessControlRequestMethod)) {
+            throw new InvalidArgumentException(
+                '$accessControlRequestMethod must be string'
+            );
+        }
+
         return $this->isValidMethod($accessControlRequestMethod);
     }
 
@@ -252,9 +261,17 @@ class CorsService
      *
      * @param string $text
      * @return bool
+     * @throws InvalidArgumentException
      */
     public function isValidToken($text)
     {
+        // Make sure $text is string
+        if (!is_string($text)) {
+            throw new InvalidArgumentException(
+                '$text must be string'
+            );
+        }
+
         $separators = [
             '(', ')', '<', '>', '@',
             ',', ';', ':', '\\', '"',
@@ -301,9 +318,17 @@ class CorsService
      *
      * @param string $method
      * @return bool
+     * @throws InvalidArgumentException
      */
     public function isMethodAllowed($method)
     {
+        // Make sure $method is string
+        if (!is_string($method)) {
+            throw new InvalidArgumentException(
+                '$method must be string'
+            );
+        }
+
         // If method is simple method, always allow
         if ($this->isSimpleMethod($method)) {
             return true;
@@ -350,9 +375,17 @@ class CorsService
      *
      * @param string $origin
      * @return bool
+     * @throws InvalidArgumentException
      */
     public function isOriginAllowed($origin)
     {
+        // Make sure $origin is string
+        if (!is_string($origin)) {
+            throw new InvalidArgumentException(
+                '$origin must be string'
+            );
+        }
+
         // If asterisk is used for allowed origins, always return true
         if (in_array('*', $this->config['allowOrigins'])) {
             return true;
@@ -367,9 +400,17 @@ class CorsService
      *
      * @param string $method
      * @return bool
+     * @throws InvalidArgumentException
      */
     public function isSimpleMethod($method)
     {
+        // Make sure $method is string
+        if (!is_string($method)) {
+            throw new InvalidArgumentException(
+                '$method must be string'
+            );
+        }
+
         return in_array($method, $this->simpleMethods);
     }
 
