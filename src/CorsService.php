@@ -38,11 +38,15 @@ class CorsService
     /**
      * @var array Simple headers
      * @see https://www.w3.org/TR/cors/#simple-header
+     *
+     * "Origin" is not officially a simple header, but Safari always includes
+     * it with non-simple requests, and it is a critical part of CORS.
      */
     protected $simpleHeaders = [
         'Accept',
         'Accept-Language',
         'Content-Language',
+        'Origin',
     ];
 
     /**
