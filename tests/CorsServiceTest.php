@@ -559,7 +559,7 @@ class CorsServiceTest extends \PHPUnit_Framework_TestCase
         $result = $cors->process((new CorsRequest)
             ->setMethod('OPTIONS')
             ->setAccessControlRequestMethod('GET')
-            ->setAccessControlRequestHeaders(['Accept', 'Accept-Language', 'Content-Language'])
+            ->setAccessControlRequestHeaders(['Accept', 'Accept-Language', 'Content-Language', 'Origin'])
             ->setOrigin('http://example.com')
         );
 

@@ -38,11 +38,15 @@ class CorsService
     /**
      * @var array Simple headers
      * @see https://www.w3.org/TR/cors/#simple-header
+     *
+     * "Origin" is not officially a simple header, but Safari always includes
+     * it with non-simple requests, and it is a critical part of CORS.
      */
     protected $simpleHeaders = [
         'Accept',
         'Accept-Language',
         'Content-Language',
+        'Origin',
     ];
 
     /**
@@ -198,6 +202,9 @@ class CorsService
         // Normalize maxAge
         $config['maxAge'] = (int)$config['maxAge'];
 
+        /** @todo Check for use of wildcard in allowOrigins when allowCredentials equals true */
+
+        // Set config as object attribute
         $this->config = $config;
 
         return $this;
@@ -386,8 +393,8 @@ class CorsService
             );
         }
 
-        // If asterisk is used for allowed origins, always return true
-        if (in_array('*', $this->config['allowOrigins'])) {
+        // If asterisk is used for allowed origins
+        if ($this->config['allowOrigins'] === ['*']) {
             return true;
         }
 
@@ -437,7 +444,7 @@ class CorsService
      */
     protected function canAllowCredentials()
     {
-        return !in_array('*', $this->config['allowOrigins'], true)
+        return $this->config['allowOrigins'] !== ['*']
         && (bool)$this->config['allowCredentials'];
     }
 
