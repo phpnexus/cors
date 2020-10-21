@@ -294,7 +294,7 @@ class CorsService implements LoggerAwareInterface
             '(', ')', '<', '>', '@',
             ',', ';', ':', '\\', '"',
             '/', '[', ']', '?', '=',
-            '{', '}', 32, 9
+            '{', '}', chr(32), chr(9)
         ];
 
         // If contains separator, return false
