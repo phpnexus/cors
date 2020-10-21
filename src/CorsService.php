@@ -10,8 +10,10 @@
 namespace PhpNexus\Cors;
 
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
 
-class CorsService
+class CorsService implements LoggerAwareInterface
 {
     /**
      * @var array Config
@@ -49,13 +51,21 @@ class CorsService
         'Origin',
     ];
 
+    /** @var \Psr\Log\LoggerInterface */
+    private $logger;
+
     /**
      * @param array $config Config
+     * @param \Psr\Log\LoggerInterface $logger Logger instance
      */
-    public function __construct(array $config)
+    public function __construct(array $config, LoggerInterface $logger = null)
     {
         $this->setConfig($config);
+
+        if ($logger !== null) {
+            $this->setLogger($logger);
         }
+    }
 
     /**
      * Process request
@@ -79,11 +89,17 @@ class CorsService
 
             // Section 6.2 #2 - If origin not allowed, stop processing
             if (!$this->isOriginAllowed($request->getOrigin())) {
+                if ($this->logger) {
+                    $this->logger->info('Origin now allowed');
+                }
                 return $response;
             }
 
             // Section 6.2 #3 - Check access-control-request-method
             if (!$this->checkAccessControlRequestMethod($request->getAccessControlRequestMethod())) {
+                if ($this->logger) {
+                    $this->logger->info('Header "access-control-request-method" is not valid');
+                }
                 return $response;
             }
 
@@ -91,11 +107,17 @@ class CorsService
             if ($request->hasAccessControlRequestHeaders()
             && !$this->checkAccessControlRequestHeaders($request->getAccessControlRequestHeaders())
             ) {
+                if ($this->logger) {
+                    $this->logger->info('Header "access-control-request-headers" is not valid');
+                }
                 return $response;
             }
 
             // Section 6.2 #5 - Check if requested method allowed
             if (!$this->isMethodAllowed($request->getAccessControlRequestMethod())) {
+                if ($this->logger) {
+                    $this->logger->info('Method is not allowed');
+                }
                 return $response;
             }
 
@@ -103,6 +125,9 @@ class CorsService
             if ($request->hasAccessControlRequestHeaders()
             && !$this->isHeadersAllowed($request->getAccessControlRequestHeaders())
             ) {
+                if ($this->logger) {
+                    $this->logger->info('Headers not in "allow-control-request-headers" list');
+                }
                 return $response;
             }
 
@@ -219,8 +244,15 @@ class CorsService
     {
         return $this->config;
     }
-        elseif (array_key_exists($key, $this->config)) {
-            return $this->config[$key];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogger(LoggerInterface $logger): CorsService
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 
     /**
