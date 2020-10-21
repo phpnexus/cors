@@ -3,20 +3,22 @@
  * CORS service
  *
  * @link        https://github.com/phpnexus/cors
- * @copyright   Copyright (c) 2016 Mark Prosser
+ * @copyright   Copyright (c) 2020 Mark Prosser
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html Apache License 2.0
  */
 
 namespace PhpNexus\Cors;
 
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
 
-class CorsService
+class CorsService implements LoggerAwareInterface
 {
     /**
      * @var array Config
      */
-    protected $config = [
+    private $config = [
         'allowMethods'     => [],
         'allowHeaders'     => [],
         'allowOrigins'     => [],
@@ -29,7 +31,7 @@ class CorsService
      * @var array Simple methods
      * @see https://www.w3.org/TR/cors/#simple-method
      */
-    protected $simpleMethods = [
+    private $simpleMethods = [
         'GET',
         'HEAD',
         'POST',
@@ -42,19 +44,27 @@ class CorsService
      * "Origin" is not officially a simple header, but Safari always includes
      * it with non-simple requests, and it is a critical part of CORS.
      */
-    protected $simpleHeaders = [
+    private $simpleHeaders = [
         'Accept',
         'Accept-Language',
         'Content-Language',
         'Origin',
     ];
 
+    /** @var \Psr\Log\LoggerInterface */
+    private $logger;
+
     /**
      * @param array $config Config
+     * @param \Psr\Log\LoggerInterface $logger Logger instance
      */
-    public function __construct(array $config)
+    public function __construct(array $config, LoggerInterface $logger = null)
     {
         $this->setConfig($config);
+
+        if ($logger !== null) {
+            $this->setLogger($logger);
+        }
     }
 
     /**
@@ -63,7 +73,7 @@ class CorsService
      * @param CorsRequest $request
      * @return array Response parameters
      */
-    public function process(CorsRequest $request)
+    public function process(CorsRequest $request): array
     {
         $response = [];
 
@@ -74,16 +84,22 @@ class CorsService
         if ($request->isPreflight()) {
             // Section 6.2 #1 - If no origin, stop processing
             if (!$request->hasOrigin()) {
-               return $response;
+                return $response;
             }
 
             // Section 6.2 #2 - If origin not allowed, stop processing
             if (!$this->isOriginAllowed($request->getOrigin())) {
+                if ($this->logger) {
+                    $this->logger->info('Origin now allowed');
+                }
                 return $response;
             }
 
             // Section 6.2 #3 - Check access-control-request-method
             if (!$this->checkAccessControlRequestMethod($request->getAccessControlRequestMethod())) {
+                if ($this->logger) {
+                    $this->logger->info('Header "access-control-request-method" is not valid');
+                }
                 return $response;
             }
 
@@ -91,11 +107,17 @@ class CorsService
             if ($request->hasAccessControlRequestHeaders()
             && !$this->checkAccessControlRequestHeaders($request->getAccessControlRequestHeaders())
             ) {
+                if ($this->logger) {
+                    $this->logger->info('Header "access-control-request-headers" is not valid');
+                }
                 return $response;
             }
 
             // Section 6.2 #5 - Check if requested method allowed
             if (!$this->isMethodAllowed($request->getAccessControlRequestMethod())) {
+                if ($this->logger) {
+                    $this->logger->info('Method is not allowed');
+                }
                 return $response;
             }
 
@@ -103,6 +125,9 @@ class CorsService
             if ($request->hasAccessControlRequestHeaders()
             && !$this->isHeadersAllowed($request->getAccessControlRequestHeaders())
             ) {
+                if ($this->logger) {
+                    $this->logger->info('Headers not in "allow-control-request-headers" list');
+                }
                 return $response;
             }
 
@@ -173,7 +198,7 @@ class CorsService
      * @param array $config Config
      * @return self
      */
-    public function setConfig(array $config)
+    public function setConfig(array $config): CorsService
     {
         // Filter out unknown config keys, and use to override defaults
         $config = array_merge(
@@ -213,20 +238,21 @@ class CorsService
     /**
      * Get config
      *
-     * @param string $key Config key (optional)
-     * @return mixed
+     * @return array
      */
-    public function getConfig($key = null)
+    public function getConfig(): array
     {
-        if ($key === null) {
-            return $this->config;
-        }
-        elseif (array_key_exists($key, $this->config)) {
-            return $this->config[$key];
-        }
-        else {
-            return; // Or throw exception?
-        }
+        return $this->config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogger(LoggerInterface $logger): CorsService
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 
     /**
@@ -237,7 +263,7 @@ class CorsService
      * @return bool
      * @throws InvalidArgumentException
      */
-    protected function checkAccessControlRequestMethod($accessControlRequestMethod)
+    protected function checkAccessControlRequestMethod(string $accessControlRequestMethod): bool
     {
         // Make sure $accessControlRequestMethod is string
         if (!is_string($accessControlRequestMethod)) {
@@ -256,7 +282,7 @@ class CorsService
      * @param string $method
      * @return bool
      */
-    protected function isValidMethod($method)
+    protected function isValidMethod(string $method): bool
     {
         return is_string($method) && $this->isValidToken($method);
     }
@@ -270,7 +296,7 @@ class CorsService
      * @return bool
      * @throws InvalidArgumentException
      */
-    protected function isValidToken($text)
+    protected function isValidToken(string $text): bool
     {
         // Make sure $text is string
         if (!is_string($text)) {
@@ -308,7 +334,7 @@ class CorsService
      * @param array $accessControlRequestHeaders
      * @return bool
      */
-    protected function checkAccessControlRequestHeaders(array $accessControlRequestHeaders)
+    protected function checkAccessControlRequestHeaders(array $accessControlRequestHeaders): bool
     {
         // Make sure all array elements are strings and not blank
         foreach ($accessControlRequestHeaders as $h) {
@@ -327,15 +353,8 @@ class CorsService
      * @return bool
      * @throws InvalidArgumentException
      */
-    protected function isMethodAllowed($method)
+    protected function isMethodAllowed(string $method): bool
     {
-        // Make sure $method is string
-        if (!is_string($method)) {
-            throw new InvalidArgumentException(
-                '$method must be string'
-            );
-        }
-
         // If method is simple method, always allow
         if ($this->isSimpleMethod($method)) {
             return true;
@@ -354,7 +373,7 @@ class CorsService
      * @param array $headers
      * @return bool
      */
-    protected function isHeadersAllowed(array $headers)
+    protected function isHeadersAllowed(array $headers): bool
     {
         /**
          * Webkit browsers are known to include simple headers in access-control-request-headers.
@@ -384,7 +403,7 @@ class CorsService
      * @return bool
      * @throws InvalidArgumentException
      */
-    protected function isOriginAllowed($origin)
+    protected function isOriginAllowed(string $origin): bool
     {
         // Make sure $origin is string
         if (!is_string($origin)) {
@@ -409,15 +428,8 @@ class CorsService
      * @return bool
      * @throws InvalidArgumentException
      */
-    protected function isSimpleMethod($method)
+    protected function isSimpleMethod(string $method): bool
     {
-        // Make sure $method is string
-        if (!is_string($method)) {
-            throw new InvalidArgumentException(
-                '$method must be string'
-            );
-        }
-
         return in_array($method, $this->simpleMethods);
     }
 
@@ -427,7 +439,7 @@ class CorsService
      * @param array $headers
      * @return bool
      */
-    protected function isSimpleHeaders(array $headers)
+    protected function isSimpleHeaders(array $headers): bool
     {
         return array_udiff(
             $headers,
@@ -442,7 +454,7 @@ class CorsService
      *
      * @return bool
      */
-    protected function canAllowCredentials()
+    protected function canAllowCredentials(): bool
     {
         return $this->config['allowOrigins'] !== ['*']
         && (bool)$this->config['allowCredentials'];
@@ -453,7 +465,7 @@ class CorsService
      *
      * @return bool
      */
-    protected function canExposeHeaders()
+    protected function canExposeHeaders(): bool
     {
         return !empty($this->config['exposeHeaders']);
     }
@@ -463,7 +475,7 @@ class CorsService
      *
      * @return bool
      */
-    protected function canCache()
+    protected function canCache(): bool
     {
         return $this->config['maxAge'] > 0;
     }

@@ -3,7 +3,7 @@
  * CORS request
  *
  * @link        https://github.com/phpnexus/cors
- * @copyright   Copyright (c) 2016 Mark Prosser
+ * @copyright   Copyright (c) 2020 Mark Prosser
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html Apache License 2.0
  */
 
@@ -14,16 +14,16 @@ use InvalidArgumentException;
 class CorsRequest
 {
     /** @var string Request method */
-    protected $method = '';
+    private $method = '';
 
     /** @var string Origin */
-    protected $origin = '';
+    private $origin = '';
 
     /** @var string Access-control-request-method */
-    protected $accessControlRequestMethod = '';
+    private $accessControlRequestMethod = '';
 
     /** @var array Access-control-request-headers */
-    protected $accessControlRequestHeaders = [];
+    private $accessControlRequestHeaders = [];
 
     /**
      * @param string $method (optional)
@@ -31,7 +31,7 @@ class CorsRequest
      * @param string $accessControlRequestMethod (optional)
      * @param array $accessControlRequestHeaders (optional)
      */
-    public function __construct($method = null, $origin = null, $accessControlRequestMethod = null, array $accessControlRequestHeaders = null)
+    public function __construct(string $method = null, string $origin = null, string $accessControlRequestMethod = null, array $accessControlRequestHeaders = null)
     {
         // Set method
         if ($method !== null) {
@@ -59,7 +59,7 @@ class CorsRequest
      *
      * @return bool
      */
-    public function isPreflight()
+    public function isPreflight(): bool
     {
         return $this->getMethod() === 'OPTIONS'
         && $this->hasAccessControlRequestMethod();
@@ -72,16 +72,9 @@ class CorsRequest
      * @return self
      * @throws InvalidArgumentException
      */
-    public function setMethod($method)
+    public function setMethod(string $method): CorsRequest
     {
-        // Validate method is string
-        if (is_string($method) === false) {
-            throw new InvalidArgumentException(
-                'Parameter "method" is not a string'
-            );
-        }
-
-        // Valid method is not blank
+        // Validate method is not blank
         if ($method === '') {
             throw new InvalidArgumentException(
                 'Parameter "method" cannot be blank'
@@ -98,7 +91,7 @@ class CorsRequest
      *
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -110,7 +103,7 @@ class CorsRequest
      * @return self
      * @throws InvalidArgumentException
      */
-    public function setOrigin($origin)
+    public function setOrigin(string $origin): CorsRequest
     {
         // Validate origin is only a scheme and hostname
         $parsed_origin = parse_url($origin);
@@ -130,7 +123,7 @@ class CorsRequest
      *
      * @return string|null
      */
-    public function getOrigin()
+    public function getOrigin(): ?string
     {
         return $this->origin;
     }
@@ -140,7 +133,7 @@ class CorsRequest
      *
      * @return bool
      */
-    public function hasOrigin()
+    public function hasOrigin(): bool
     {
         return $this->origin !== '';
     }
@@ -151,7 +144,7 @@ class CorsRequest
      * @param string $requestMethod
      * @return self
      */
-    public function setAccessControlRequestMethod($accessControlRequestMethod)
+    public function setAccessControlRequestMethod(string $accessControlRequestMethod): CorsRequest
     {
         // Validate access-control-request-method is string
         if (is_string($accessControlRequestMethod) === false) {
@@ -177,7 +170,7 @@ class CorsRequest
      *
      * @return string|null
      */
-    public function getAccessControlRequestMethod()
+    public function getAccessControlRequestMethod(): ?string
     {
         return $this->accessControlRequestMethod;
     }
@@ -187,7 +180,7 @@ class CorsRequest
      *
      * @return bool
      */
-    public function hasAccessControlRequestMethod()
+    public function hasAccessControlRequestMethod(): bool
     {
         return $this->accessControlRequestMethod !== '';
     }
@@ -198,7 +191,7 @@ class CorsRequest
      * @param array $requestHeaders
      * @return self
      */
-    public function setAccessControlRequestHeaders(array $accessControlRequestHeaders)
+    public function setAccessControlRequestHeaders(array $accessControlRequestHeaders): CorsRequest
     {
         // Validate all array elements are strings
         foreach ($accessControlRequestHeaders as $h) {
@@ -217,9 +210,9 @@ class CorsRequest
     /**
      * Get access-control-request-headers
      *
-     * @return string[]|null
+     * @return array
      */
-    public function getAccessControlRequestHeaders()
+    public function getAccessControlRequestHeaders(): array
     {
         return $this->accessControlRequestHeaders;
     }
@@ -229,7 +222,7 @@ class CorsRequest
      *
      * @return bool
      */
-    public function hasAccessControlRequestHeaders()
+    public function hasAccessControlRequestHeaders(): bool
     {
         return $this->accessControlRequestHeaders !== [];
     }
