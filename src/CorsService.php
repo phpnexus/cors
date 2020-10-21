@@ -261,17 +261,9 @@ class CorsService implements LoggerAwareInterface
      *
      * @param string $accessControlRequestMethod
      * @return bool
-     * @throws InvalidArgumentException
      */
     protected function checkAccessControlRequestMethod(string $accessControlRequestMethod): bool
     {
-        // Make sure $accessControlRequestMethod is string
-        if (!is_string($accessControlRequestMethod)) {
-            throw new InvalidArgumentException(
-                '$accessControlRequestMethod must be string'
-            );
-        }
-
         return $this->isValidMethod($accessControlRequestMethod);
     }
 
@@ -284,7 +276,7 @@ class CorsService implements LoggerAwareInterface
      */
     protected function isValidMethod(string $method): bool
     {
-        return is_string($method) && $this->isValidToken($method);
+        return $this->isValidToken($method);
     }
 
     /**
@@ -294,17 +286,10 @@ class CorsService implements LoggerAwareInterface
      *
      * @param string $text
      * @return bool
-     * @throws InvalidArgumentException
      */
     protected function isValidToken(string $text): bool
     {
-        // Make sure $text is string
-        if (!is_string($text)) {
-            throw new InvalidArgumentException(
-                '$text must be string'
-            );
-        }
-
+        // List of separators
         $separators = [
             '(', ')', '<', '>', '@',
             ',', ';', ':', '\\', '"',
@@ -351,7 +336,6 @@ class CorsService implements LoggerAwareInterface
      *
      * @param string $method
      * @return bool
-     * @throws InvalidArgumentException
      */
     protected function isMethodAllowed(string $method): bool
     {
@@ -401,17 +385,9 @@ class CorsService implements LoggerAwareInterface
      *
      * @param string $origin
      * @return bool
-     * @throws InvalidArgumentException
      */
     protected function isOriginAllowed(string $origin): bool
     {
-        // Make sure $origin is string
-        if (!is_string($origin)) {
-            throw new InvalidArgumentException(
-                '$origin must be string'
-            );
-        }
-
         // If asterisk is used for allowed origins
         if ($this->config['allowOrigins'] === ['*']) {
             return true;
@@ -426,7 +402,6 @@ class CorsService implements LoggerAwareInterface
      *
      * @param string $method
      * @return bool
-     * @throws InvalidArgumentException
      */
     protected function isSimpleMethod(string $method): bool
     {

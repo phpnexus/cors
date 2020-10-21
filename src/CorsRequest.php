@@ -146,13 +146,6 @@ class CorsRequest
      */
     public function setAccessControlRequestMethod(string $accessControlRequestMethod): CorsRequest
     {
-        // Validate access-control-request-method is string
-        if (is_string($accessControlRequestMethod) === false) {
-            throw new InvalidArgumentException(
-                'Parameter "method" is not a string'
-            );
-        }
-
         // Valid access-control-request-method is not blank
         if ($accessControlRequestMethod === '') {
             throw new InvalidArgumentException(
