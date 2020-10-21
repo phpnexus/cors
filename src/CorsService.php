@@ -170,6 +170,9 @@ class CorsService implements LoggerAwareInterface
 
             // Section 6.1 #2 - If origin not allowed, stop processing
             if (!$this->isOriginAllowed($request->getOrigin())) {
+                if ($this->logger) {
+                    $this->logger->info('Origin now allowed');
+                }
                 return $response;
             }
 
