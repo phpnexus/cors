@@ -9,7 +9,6 @@
 
 namespace PhpNexus\Cors;
 
-use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 
