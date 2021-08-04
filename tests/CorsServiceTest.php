@@ -11,8 +11,9 @@ namespace PhpNexus\Cors\Tests;
 
 use PhpNexus\Cors\CorsService;
 use PhpNexus\Cors\CorsRequest;
+use PHPUnit\Framework\TestCase;
 
-class CorsServiceTest extends \PHPUnit_Framework_TestCase
+class CorsServiceTest extends TestCase
 {
     /**
      * CORS:
