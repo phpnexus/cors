@@ -18,7 +18,7 @@ It's recommended that you use [Composer](https://getcomposer.org/) to install Co
 $ composer require phpnexus/cors
 ```
 
-This package requires PHP 7.1 or newer.
+This package requires PHP 7.4 or 8.1.
 
 ## Usage
 
