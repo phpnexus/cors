@@ -250,11 +250,9 @@ class CorsService implements LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function setLogger(LoggerInterface $logger): CorsService
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-
-        return $this;
     }
 
     /**
