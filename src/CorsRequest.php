@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CORS request
  *
@@ -62,7 +63,7 @@ class CorsRequest
     public function isPreflight(): bool
     {
         return $this->getMethod() === 'OPTIONS'
-        && $this->hasAccessControlRequestMethod();
+            && $this->hasAccessControlRequestMethod();
     }
 
     /**
