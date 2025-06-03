@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CORS service
  *
@@ -57,7 +58,7 @@ class CorsService implements LoggerAwareInterface
      * @param array $config Config
      * @param \Psr\Log\LoggerInterface $logger Logger instance
      */
-    public function __construct(array $config, LoggerInterface $logger = null)
+    public function __construct(array $config, ?LoggerInterface $logger = null)
     {
         $this->setConfig($config);
 
@@ -103,8 +104,9 @@ class CorsService implements LoggerAwareInterface
             }
 
             // Section 6.2 #4 - Check access-control-request-headers
-            if ($request->hasAccessControlRequestHeaders()
-            && !$this->checkAccessControlRequestHeaders($request->getAccessControlRequestHeaders())
+            if (
+                $request->hasAccessControlRequestHeaders()
+                && !$this->checkAccessControlRequestHeaders($request->getAccessControlRequestHeaders())
             ) {
                 if ($this->logger) {
                     $this->logger->info('Header "access-control-request-headers" is not valid');
@@ -121,8 +123,9 @@ class CorsService implements LoggerAwareInterface
             }
 
             // Section 6.2 #6 - Check if ALL requested headers are allowed
-            if ($request->hasAccessControlRequestHeaders()
-            && !$this->isHeadersAllowed($request->getAccessControlRequestHeaders())
+            if (
+                $request->hasAccessControlRequestHeaders()
+                && !$this->isHeadersAllowed($request->getAccessControlRequestHeaders())
             ) {
                 if ($this->logger) {
                     $this->logger->info('Headers not in "allow-control-request-headers" list');
@@ -164,7 +167,7 @@ class CorsService implements LoggerAwareInterface
         else {
             // Section 6.1 #1 - If no origin, stop processing
             if (!$request->hasOrigin()) {
-               return $response;
+                return $response;
             }
 
             // Section 6.1 #2 - If origin not allowed, stop processing
@@ -291,10 +294,25 @@ class CorsService implements LoggerAwareInterface
     {
         // List of separators
         $separators = [
-            '(', ')', '<', '>', '@',
-            ',', ';', ':', '\\', '"',
-            '/', '[', ']', '?', '=',
-            '{', '}', chr(32), chr(9)
+            '(',
+            ')',
+            '<',
+            '>',
+            '@',
+            ',',
+            ';',
+            ':',
+            '\\',
+            '"',
+            '/',
+            '[',
+            ']',
+            '?',
+            '=',
+            '{',
+            '}',
+            chr(32),
+            chr(9)
         ];
 
         // If contains separator, return false
@@ -432,7 +450,7 @@ class CorsService implements LoggerAwareInterface
     protected function canAllowCredentials(): bool
     {
         return $this->config['allowOrigins'] !== ['*']
-        && (bool)$this->config['allowCredentials'];
+            && (bool)$this->config['allowCredentials'];
     }
 
     /**

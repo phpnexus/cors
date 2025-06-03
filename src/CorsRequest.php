@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CORS request
  *
@@ -31,7 +32,7 @@ class CorsRequest
      * @param string $accessControlRequestMethod (optional)
      * @param array $accessControlRequestHeaders (optional)
      */
-    public function __construct(string $method = null, string $origin = null, string $accessControlRequestMethod = null, array $accessControlRequestHeaders = null)
+    public function __construct(?string $method = null, ?string $origin = null, ?string $accessControlRequestMethod = null, ?array $accessControlRequestHeaders = null)
     {
         // Set method
         if ($method !== null) {
@@ -62,7 +63,7 @@ class CorsRequest
     public function isPreflight(): bool
     {
         return $this->getMethod() === 'OPTIONS'
-        && $this->hasAccessControlRequestMethod();
+            && $this->hasAccessControlRequestMethod();
     }
 
     /**
