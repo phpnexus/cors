@@ -57,7 +57,7 @@ class CorsService implements LoggerAwareInterface
      * @param array $config Config
      * @param \Psr\Log\LoggerInterface $logger Logger instance
      */
-    public function __construct(array $config, LoggerInterface $logger = null)
+    public function __construct(array $config, ?LoggerInterface $logger = null)
     {
         $this->setConfig($config);
 
