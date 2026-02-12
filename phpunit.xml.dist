@@ -10,7 +10,7 @@
 >
     <testsuites>
         <testsuite name="CORS Test Suite">
-            <directory suffix=".php">./tests/</directory>
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
     <source>
