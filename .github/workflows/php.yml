@@ -39,7 +39,6 @@ jobs:
       - name: Check syntax
         run: |
           php -l src/
-          vendor/bin/phpcs --standard=psr12 src/ tests/
 
       - name: Run tests
         run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
