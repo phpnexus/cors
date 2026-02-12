@@ -6,7 +6,7 @@
     beStrictAboutOutputDuringTests="true"
     colors="true"
     processIsolation="false"
-    bootstrap="tests/bootstrap.php"
+    bootstrap="vendor/autoload.php"
 >
     <testsuites>
         <testsuite name="CORS Test Suite">
