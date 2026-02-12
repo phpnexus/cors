@@ -5,8 +5,6 @@
     beStrictAboutChangesToGlobalState="true"
     beStrictAboutOutputDuringTests="true"
     colors="true"
-    displayDetailsOnPhpunitNotices="true"
-    displayDetailsOnPhpunitDeprecations="true"
     processIsolation="false"
     bootstrap="tests/bootstrap.php"
 >
